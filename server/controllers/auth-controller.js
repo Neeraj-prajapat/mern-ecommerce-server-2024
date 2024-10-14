@@ -73,7 +73,12 @@ const register = async (req, res) => {
         }
 
         const userCreated = await User.create({ username, email, phone, password });
-        res.status(201).json({ message: "User created successfully", user: userCreated });  // Changed to 201
+        res.status(201).json({ 
+            message: "User created successfully",
+            user: userCreated,
+            token: await userCreated.generateToken(),
+            userId: userCreated._id.toString(),
+             });  // Changed to 201
     } catch (error) {
         console.error(error);  // Log the error for debugging
         res.status(500).send({ msg: "Internal Server Error" });  // Changed to 500 for server errors
@@ -84,3 +89,7 @@ module.exports = { home, register };
 
 
 
+
+
+
+//? In most cses, converting _id to a string is a good practice because it ensures consistency and compatibility across different HWT  libraries and systems. It also aligns with the expectation that claims in JWT  are represented as string.
