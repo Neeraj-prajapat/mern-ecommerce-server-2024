@@ -39,10 +39,10 @@
 
 
 const User = require("../models/user-model");
-// const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 
 
-// Home controller
+//? Home controller
 const home = (req, res) => {
     try {
         res.status(200).send("hi guys");
@@ -52,7 +52,7 @@ const home = (req, res) => {
     }
 };
 
-// Register controller
+//? Register controller
 const register = async (req, res) => {
     try {
         console.log(req.body);
@@ -85,11 +85,121 @@ const register = async (req, res) => {
     }
 };
 
-module.exports = { home, register };
+
+//? User login logic
+
+const login = async (req, res) => {
+    try {
+        const {email, password } = req.body;
+
+        const userExist = await User.findOne({email});
+        console.log(userExist);
+
+        if(!userExist) {
+            return res.status(400).json({ message: "Invalid Credentials"});
+        }
+
+        const user = await bcrypt.compare(password, userExist.password);
+
+        if(user){
+            res.status(201).json({ 
+                message: "Login Successful",
+                token: await userExist.generateToken(),
+                userId: userExist._id.toString(),
+            });
+        } else {
+            res.status(401).json({message: "Invalid email or password"})
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "Internal Server Error" });
+    }
+};
 
 
 
 
 
 
-//? In most cses, converting _id to a string is a good practice because it ensures consistency and compatibility across different HWT  libraries and systems. It also aligns with the expectation that claims in JWT  are represented as string.
+module.exports = { home, register, login };
+
+
+
+
+
+
+//? In most cases, converting _id to a string is a good practice because it ensures consistency and compatibility across different HWT  libraries and systems. It also aligns with the expectation that claims in JWT  are represented as string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         // Check if user exists
+//         const userExist = await User.findOne({ email });
+//         if (!userExist) {
+//             return res.status(400).json({ message: "Invalid Credentials" });
+//         }
+
+//         // Check if the password matches
+//         const isPasswordMatch = await bcrypt.compare(password, userExist.password);
+
+//         if (isPasswordMatch) {
+//             // Generate token
+//             const token = await userExist.generateToken();
+            
+//             res.status(200).json({
+//                 message: "Login Successful",
+//                 token,
+//                 userId: userExist._id.toString(),
+//             });
+//         } else {
+//             res.status(401).json({ message: "Invalid email or password" });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// };
