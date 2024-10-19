@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
     username : {
         type: String, 
-        require: true, 
+        required: true, 
     },
     email: {
         type: String,
@@ -33,7 +33,7 @@ userSchema.pre("save", async function (next) {
         const user = this;
 
         if(!user.isModified("password")) {
-            next();
+            return next();
         }
         try {
             const saltRound = await bcrypt.genSalt(10);
@@ -47,9 +47,9 @@ userSchema.pre("save", async function (next) {
 //? compare the password
 userSchema.methods.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password)
-}
+};
 
-//?json web token
+//? json web token
 userSchema.methods.generateToken = async function () {
     try {
         return jwt.sign({

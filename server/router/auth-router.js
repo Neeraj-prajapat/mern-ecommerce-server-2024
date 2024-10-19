@@ -23,7 +23,7 @@ router.route("/login").post(login);
 
 
 //? you can also write above part like this 
-// router.route('/').get((req, res) => {
+// router.route('/').get((req, res) => {    
 //     res.status(200).send("fuck you guys")
 // })   
 
