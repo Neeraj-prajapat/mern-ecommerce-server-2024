@@ -172,8 +172,13 @@ const home = async (req, res) => {
 const register = async (req, res) => {
     try {
         console.log("Request body:", req.body);
-        const { username, email, phone, password } = req.body;
+        const { firstName, lastName, email, phone, password } = req.body;
 
+
+        if (!password) {
+          console.error("Password is missing in the request");
+          return res.status(400).json({ msg: "Password is required" });
+        }
         // Validate request (consider using a schema validator here)
 
         // Check for existing user
@@ -184,12 +189,12 @@ const register = async (req, res) => {
 
         // Create new user
         const userCreated = await User.create({ 
-            username,
+            firstName,
+            lastName,
             email,
             phone,
             password, // Password will be hashed in the pre-save hook
         });
-
         res.status(201).json({
             msg: "Registration Successful",
             token: await userCreated.generateToken(),
@@ -197,7 +202,7 @@ const register = async (req, res) => {
         });
     } catch (error) {
         console.error("Error while registering user:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal fuck server error" });
     }
 };
 

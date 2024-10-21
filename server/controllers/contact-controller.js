@@ -2,11 +2,12 @@ const Contact = require("../models/contact-model");
 
 const contactForm = async (req, res, next) => {
     try {
-        const { username, email, message } = req.body;
+        const { firstName, lastName, email, message } = req.body;
         
         // Creating the new contact
         const contact = new Contact({
-            username,
+            firstName,
+            lastName,
             email,
             message,
         });
